@@ -18,7 +18,7 @@ module.exports = {
 	module: {
 		loaders: [
 			{ test: /\.vue$/, loader: 'vue' },
-			{ test: /\.js$/, loader: 'babel', include: projectRoot, exclude: /node_modules\/(?!buntpapier)/ },
+			{ test: /\.js$/, loader: 'babel', include: projectRoot, exclude: /node_modules/ },
 			{ test: /\.json$/, loader: 'json' },
 			{ test: /\.html$/, loader: 'vue-html' },
 			{ test: /\.svg(\?.*)?/, loader: 'svg-url',

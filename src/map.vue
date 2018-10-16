@@ -6,7 +6,7 @@ import leaflet from 'leaflet'
 import hash from 'leaflet-hash'
 import 'leaflet/dist/leaflet.css'
 import config from 'config'
-import api from './feinstaub-api'
+import api from './djnd-api'
 import './hexbin-layer'
 
 export default {

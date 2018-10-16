@@ -1,9 +1,10 @@
 /* global fetch */
-// const URL = 'https://api.djnd.si/air-dust-data'
-const URL = 'http://localhost:3000/air-dust-data'
-
 import _ from 'lodash'
 import 'whatwg-fetch'
+
+const URL = 'http://localhost:3000/air-dust-data'
+// const URL = 'https://api.djnd.si/air-dust-data'
+// const URL = 'https://api.luftdaten.info/static/v2/data.dust.min.json'
 
 let api = {
 	fetchNow () {

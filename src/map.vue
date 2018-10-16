@@ -1,13 +1,25 @@
 <template lang="jade">
 .map
 </template>
+
 <script>
 import leaflet from 'leaflet'
-import hash from 'leaflet-hash'
+import 'leaflet-hash'
 import 'leaflet/dist/leaflet.css'
 import config from 'config'
 import api from './djnd-api'
 import './hexbin-layer'
+
+// Workaround: https://github.com/Leaflet/Leaflet/issues/4968#issuecomment-269750768
+/* eslint-disable no-underscore-dangle, global-require */
+delete leaflet.Icon.Default.prototype._getIconUrl
+
+leaflet.Icon.Default.mergeOptions({
+	iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+	iconUrl: require('leaflet/dist/images/marker-icon.png'),
+	shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+})
+/* eslint-enable no-underscore-dangle, global-require */
 
 export default {
 	mounted () {
@@ -16,13 +28,18 @@ export default {
 				center: config.center,
 				zoom: config.zoom
 			})
-//			leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+			var marker
+
+			map.on('dblclick ', (e) => {
+				console.log(e.latlng)
+				if (!marker) marker = leaflet.marker(e.latlng).addTo(map)
+				marker.setLatLng(e.latlng).bindPopup(String(e.latlng)).openPopup()
+			})
+
 			leaflet.tileLayer('https://maps.luftdaten.info/tiles/{z}/{x}/{y}.png', {
 				attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
 				maxZoom: 13,
-				// continuousWorld: false,
-				// noWrap: true
-
 			}).addTo(map)
 
 			let options = {
@@ -32,18 +49,22 @@ export default {
 				},
 				click: (data) => {
 					this.$emit('cell-selected', data)
-					document.getElementById("cell-info").style.display = ""
-					let row_counter = document.getElementsByClassName("cell_info_images");
-					for (var i = 0; i < row_counter.length; i++) {
-						row_counter[i].style.display = 'none'
+					const cellInfo = document.getElementById('cell-info')
+					if (cellInfo) {
+						cellInfo.style.display = ''
 					}
-					row_counter = document.getElementsByClassName("graph_on");
-					for (var i = 0; i < row_counter.length; i++) {
-						row_counter[i].style.display = ''
+					let i = 0
+					let rowCounter = document.getElementsByClassName('cell_info_images')
+					for (i = 0; i < rowCounter.length; i++) {
+						rowCounter[i].style.display = 'none'
 					}
-					row_counter = document.getElementsByClassName("graph_off");
-					for (var i = 0; i < row_counter.length; i++) {
-						row_counter[i].style.display = 'none'
+					rowCounter = document.getElementsByClassName('graph_on')
+					for (i = 0; i < rowCounter.length; i++) {
+						rowCounter[i].style.display = ''
+					}
+					rowCounter = document.getElementsByClassName('graph_off')
+					for (i = 0; i < rowCounter.length; i++) {
+						rowCounter[i].style.display = 'none'
 					}
 				}
 			}
@@ -54,11 +75,12 @@ export default {
 				hexLayer.data(cells)
 			})
 
-			var hash = new L.hash(map);
-
+			// eslint-disable-next-line
+			new leaflet.Hash(map)
 		})
 	}
 }
 </script>
+
 <style lang="stylus">
 </style>

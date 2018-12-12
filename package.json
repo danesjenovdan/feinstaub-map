@@ -70,12 +70,15 @@
   },
   "dependencies": {
     "buntpapier": "^0.9.0",
+    "chart.js": "^2.7.3",
     "d3": "^3.5.17",
     "d3-hexbin": "^0.2.0",
     "d3-tip": "^0.6.7",
     "leaflet": ">=1.0.0-rc.1",
     "leaflet-hash": "^0.2.1",
     "lodash": "^4.11.1",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.23",
     "promise-polyfill": "^6.0.2",
     "vue": "2.1.x",
     "whatwg-fetch": "^2.0.1"

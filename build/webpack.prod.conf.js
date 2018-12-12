@@ -46,8 +46,25 @@ var webpackConfig = merge(baseWebpackConfig, {
 		// you can customize output by editing /index.html
 		// see https://github.com/ampedandwired/html-webpack-plugin
 		new HtmlWebpackPlugin({
+			filename: 'index.html',
 			template: 'index.html',
 			inject: true,
+			chunks: ['app'],
+			minify: {
+				removeComments: true,
+				collapseWhitespace: true,
+				removeAttributeQuotes: true
+				// more options:
+				// https://github.com/kangax/html-minifier#options-quick-reference
+			},
+			// necessary to consistently work with multiple chunks via CommonsChunkPlugin
+			chunksSortMode: 'dependency'
+		}),
+		new HtmlWebpackPlugin({
+			filename: 'graf.html',
+			template: 'index.html',
+			inject: true,
+			chunks: ['graf'],
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,
@@ -67,7 +84,7 @@ var webpackConfig = merge(baseWebpackConfig, {
 					module.resource &&
 					/\.js$/.test(module.resource) &&
 					module.resource.indexOf(
-						path.join(__dirname, '../node_modules') 
+						path.join(__dirname, '../node_modules')
 					) === 0
 				)
 			}
@@ -89,7 +106,7 @@ var webpackConfig = merge(baseWebpackConfig, {
 		}),
 		new webpack.ProvidePlugin({
 			Promise: 'promise-polyfill'
-		})		
+		})
 	]
 })
 

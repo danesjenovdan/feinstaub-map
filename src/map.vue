@@ -31,7 +31,7 @@ export default {
 
 			var marker
 
-			map.on('dblclick ', (e) => {
+			map.on('dblclick', (e) => {
 				console.log(e.latlng)
 				if (!marker) marker = leaflet.marker(e.latlng).addTo(map)
 				marker.setLatLng(e.latlng).bindPopup(String(e.latlng)).openPopup()
@@ -49,23 +49,6 @@ export default {
 				},
 				click: (data) => {
 					this.$emit('cell-selected', data)
-					const cellInfo = document.getElementById('cell-info')
-					if (cellInfo) {
-						cellInfo.style.display = ''
-					}
-					let i = 0
-					let rowCounter = document.getElementsByClassName('cell_info_images')
-					for (i = 0; i < rowCounter.length; i++) {
-						rowCounter[i].style.display = 'none'
-					}
-					rowCounter = document.getElementsByClassName('graph_on')
-					for (i = 0; i < rowCounter.length; i++) {
-						rowCounter[i].style.display = ''
-					}
-					rowCounter = document.getElementsByClassName('graph_off')
-					for (i = 0; i < rowCounter.length; i++) {
-						rowCounter[i].style.display = 'none'
-					}
 				}
 			}
 

@@ -1,42 +1,41 @@
 <template lang="jade">
 #cell-info(v-if="cell")
-	a(href='#' onclick='document.getElementById("cell-info").style.display="none";return false;' style='color:white') (close)
+	button(class="close-button" @click!="$emit('close')") ×
+
 	p
-		a(href='#' id='map-info-on' onclick='document.getElementById("map-info-on").style.display="none";document.getElementById("map-info-off").style.display="";document.getElementById("map-info").style.display=""; return false;' style='color:white') Erklärung einblenden
-		a(href='#' id='map-info-off' onclick='document.getElementById("map-info-on").style.display="";document.getElementById("map-info-off").style.display="none";document.getElementById("map-info").style.display="none"; return false;' style='color:white; display:none;') Erklärung ausblenden
-	div(id='map-info' style='display:none')
-		p Die Kacheln werden aktuell nach dem Durchschnitt der PM10-Werte aller in der Zelle enthaltenen Sensoren eingefärbt. Siehe dazu die Skala unten links.
-		p Die Zahlen in der ersten Spalte entsprechen den Sensor-IDs. Die erste Zeile 'mean' enthält die jeweiligen Durchschnittswerte aller in der Zelle enthaltenen Sensoren.
-		p Bitte beachten: Wir zeigen auf der Karte die Werte der letzten 5 Minuten an. Die von den jeweiligen Landesbehörden veröffentlichen Werte werden als 24-Stunden-Mittelwert angegeben. Dadurch können die Werte auf der Karte deutlich von diesen 24-Stunden-Mittelwerten abweichen.
-		p Durch einen Klick auf das Plus vor der Sensor-ID können 2 Grafiken eingeblendet werden. Die Grafik '24 h floating' zeigt den gleitenden 24-Stunden-Mittelwert für die letzten 7 Tage an. Aus technischen Gründen ist am Anfang eine Lücke von einem Tag, die Darstellung zeigt also eigentlich 8 Tage, der erste ist aber leer. Die zweite Grafik 'Last 24 hours' zeigt den Tagesverlauf für die letzten 24 Stunden.
-	h3 #Sensors {{cell.length}}
-	
+		button(class="map-info-button" v-if="!showInfo" @click!="showInfo = true") Prikaži razlago
+		button(class="map-info-button" v-else @click!="showInfo = false") Skrij razlago
+	div(id="map-info" v-if="showInfo")
+		p Ploščice so obarvane glede na povprečje vrednosti PM10 vseh senzorjev v celici. Legenda je spodaj levo.
+		p Številke v prvem stolpcu predstavljajo ID senzorja. Vrstica "povprečje" vsebuje povprečno vrednost vseh senzorjev v celici.
+		//- p Prosimo, upoštevajte: na zemljevidu prikazujemo vrednosti zadnjih 5 minut. Vrednote, ki jih objavijo zadevni državni organi, so podane kot 24-urno povprečje. To lahko povzroči, da se vrednosti na grafikonu bistveno razlikujejo od teh 24-urnih povprečij.
+		//- p S klikom na plus pred senzorjem se lahko prikaže 2 grafika. Graf '24 h plavajoče' prikazuje 24-urno gibalno povprečje zadnjih 7 dni. Zaradi tehničnih razlogov na začetku pride do prepada enega dneva, tako da predstavitev dejansko kaže 8 dni, prva pa je prazna. Druga grafika »Zadnjih 24 ur« prikazuje potek dneva v zadnjih 24 urah.
+
+	h3 Št. senzorjev: {{cell.length}}
+
 	table
 		tr
 			th Sensor ID
 			th PM10 µg/m³
 			th PM2.5 µg/m³
 		tr.mean
-			td mean
+			td povprečje
 			td {{mean.P1.toFixed(0)}}
 			td {{mean.P2.toFixed(0)}}
 		template(v-for="sensor in cell")
 			tr
-				td(style="text-align:left;")
-					a(:id="'graph_'+sensor.o.id+'_on'" class="graph_on" onclick="var sensor=this.id.substring(0,this.id.length-3);document.getElementById(sensor).style.display='';document.getElementById(sensor+'_on').style.display='none';document.getElementById(sensor+'_off').style.display=''; document.getElementById('images_'+sensor.substr(6)).innerHTML='<iframe src=\"https://api.luftdaten.info/grafana/d-solo/000000004/single-sensor-view?orgId=1&var-node=' + sensor.substring(6) + '&panelId=1\" width=\"290\" height=\"200\" frameborder=\"0\"></iframe><br /><iframe src=\"https://api.luftdaten.info/grafana/d-solo/000000004/single-sensor-view?orgId=1&var-node=' + sensor.substring(6) + '&panelId=2\" width=\"290\" height=\"200\" frameborder=\"0\"></iframe><br /><br />'; return false;" href='#' style='color:white; text-decoration: none;') (+)&nbsp;{{sensor.o.id}}
-					a(:id="'graph_'+sensor.o.id+'_off'" class="graph_off" onclick="var sensor=this.id.substring(0,this.id.length-4);document.getElementById(sensor).style.display='none';document.getElementById(sensor+'_on').style.display='';document.getElementById(sensor+'_off').style.display='none'; document.getElementById('images_'+sensor.substr(6)).innerHTML=''; return false;" href='#' style='color:white; text-decoration: none; display: none;') (-)&nbsp;{{sensor.o.id}}
+				td {{sensor.o.id}}
 				td {{sensor.o.data.P1.toFixed(0)}}
 				td {{sensor.o.data.P2.toFixed(0)}}
-			tr(:id = "'graph_'+sensor.o.id" style="display:none" class="cell_info_images")
-				td(:id = "'images_'+sensor.o.id" colspan='3')
-					br
 </template>
+
 <script>
 import _ from 'lodash'
 
 export default {
 	data () {
 		return {
+			showInfo: false,
 		}
 	},
 	props: {
@@ -52,5 +51,52 @@ export default {
 	}
 }
 </script>
-<style lang="stylus">
+
+<style lang="stylus" scoped>
+#cell-info
+	button
+		background transparent
+		border none
+		color #fff
+		cursor pointer
+		padding 0
+
+	.close-button
+		width 30px
+		height 30px
+		font-size 40px
+		line-height 33px
+		overflow hidden
+
+	.map-info-button
+		padding 2px 6px
+
+	#map-info
+		padding 0 6px
+		color #ddd
+		p
+			font-size 0.85rem
+
+	h3
+		padding 0 6px
+		font-size 1.5rem
+		font-weight 700
+
+	table
+		th
+		td
+			padding 6px 6px
+			font-size 1.25rem
+		td
+			font-family monospace
+			font-size 1.4rem
+
+		th
+		td:first-child
+			font-weight 500
+
+		td:first-child
+			font-size 1rem
+			font-family inherit
+			text-align left
 </style>

@@ -2,7 +2,7 @@
 #content
 	geo-map(@cell-selected!="(cell) => selectedCell = cell")
 	map-legend
-	cell-info(:cell='selectedCell')
+	cell-info(:cell='selectedCell' @close!="selectedCell = null")
 </template>
 <script>
 import GeoMap from './map'

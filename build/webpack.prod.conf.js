@@ -49,7 +49,7 @@ var webpackConfig = merge(baseWebpackConfig, {
 			filename: 'index.html',
 			template: 'index.html',
 			inject: true,
-			chunks: ['manifest', 'app'],
+			excludeChunks: ['graf'],
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,
@@ -64,7 +64,7 @@ var webpackConfig = merge(baseWebpackConfig, {
 			filename: 'graf.html',
 			template: 'index.html',
 			inject: true,
-			chunks: ['manifest', 'graf'],
+			excludeChunks: ['app'],
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,

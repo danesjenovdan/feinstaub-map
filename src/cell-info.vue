@@ -88,8 +88,8 @@ export default {
 			padding 6px 6px
 			font-size 1.25rem
 		td
-			font-family monospace
-			font-size 1.4rem
+			font-family 'Roboto Mono', monospace
+			font-weight 300
 
 		th
 		td:first-child
